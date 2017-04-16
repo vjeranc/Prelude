@@ -40,15 +40,9 @@ class Key extends React.Component {
 
 // Component representing an interactive piano keyboard
 class KeyboardButtons extends React.Component {
-  constructor(props) {
-    super(props);
-
-    // Prebind custom methods
-    this.onButtonPress = this.onButtonPress.bind(this);
-  }
 
   // Click handler for keys
-  onButtonPress(event) {
+  onButtonPress = (event) => {
     let key = event.target.getAttribute('data-key');
 
     // Report all currently-down key(s) to parent's callback

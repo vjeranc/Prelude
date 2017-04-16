@@ -6,25 +6,19 @@ import Vex from 'vexflow';
  * Visual display of a snippet of sheet music (wraps an engraving library)
  */
 class SheetMusicView extends React.Component {
-  constructor(props) {
-    super(props);
 
-    // Prebind custom methods
-    this.drawMusic = this.drawMusic.bind(this);
-  }
-
-  componentDidMount() {
+  componentDidMount = () => {
     this.drawMusic();
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate = (prevProps, prevState) => {
     this.drawMusic();
   }
 
   /**
    * Redraw the contents of the canvas
    */
-  drawMusic() {
+  drawMusic = () => {
     // Clear the canvas
     var container = ReactDOM.findDOMNode(this);
     while (container.lastChild) {

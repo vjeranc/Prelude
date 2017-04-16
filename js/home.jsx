@@ -1,8 +1,6 @@
 import React from 'react';
-import { Router, Route, IndexRoute, Link } from 'react-router'
-import CardTitle from 'material-ui/Card/CardTitle';
-import CardText from 'material-ui/Card/CardText';
-import CardHeader from 'material-ui/Card/CardHeader';
+import { Router, Route, IndexRoute, Link } from 'react-router';
+import { CardTitle, CardText, CardHeader } from 'material-ui';
 import Card from './common/card.jsx';
 import TipCard from './common/tip-card.jsx';
 
@@ -10,13 +8,8 @@ import TipCard from './common/tip-card.jsx';
  * Component providing the main/home screen
  */
 class Home extends React.Component {
-  constructor(props) {
-    super(props);
 
-    // Prebind custom methods
-    this.componentWillMount = this.componentWillMount.bind(this);
-  }
-  componentWillMount() {
+  componentWillMount = () => {
     this.context.appbar("Prelude");
   }
   render() {

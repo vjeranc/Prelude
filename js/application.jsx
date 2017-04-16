@@ -25,45 +25,37 @@ const muiTheme = getMuiTheme({
  */
 class Application extends React.Component {
 
-  constructor(props) {
-    super(props);
+  state = {
+    drawerOpen: false,
+    snackbarOpen: false,
+    snackbarMessage: "Hi! ^_^",
+    snackbarAutoHideDuration: 1000,
+    appBarTitle: "Prelude",
+    appBarLeftElement: null,
+    appBarRightElement: null,
+  };
 
-    // Default state
-    this.state = {
-      drawerOpen: false,
-      snackbarOpen: false,
-      snackbarMessage: "Hi! ^_^",
-      snackbarAutoHideDuration: 1000,
-      appBarTitle: "Prelude",
-      appBarLeftElement: null,
-      appBarRightElement: null,
-    };
+  // Menu items to routes map
+  menuItems = {
+    "Home": { route: "/", icon: <HomeIcon /> },
+    "Sight Reading Practice": { route: "/sightReading", icon: <MusicNoteIcon /> },
+    "Perfect Pitch Practice": { route: "/perfectPitch", icon: <HearingIcon /> },
+    "About": { route: "/about", icon: <InfoIcon /> }
+  };
 
-    // Menu items to routes map
-    this.menuItems = {
-      "Home": { route: "/", icon: <HomeIcon /> },
-      "Sight Reading Practice": { route: "/sightReading", icon: <MusicNoteIcon /> },
-      "Perfect Pitch Practice": { route: "/perfectPitch", icon: <HearingIcon /> },
-      "About": { route: "/about", icon: <InfoIcon /> }
-    };
+  // Create a Synth for children to share, so that only one AudioContext gets used
+  // (The browser/OS limits the number of these)
+  synth = new Synth();
 
-    // Create a Synth for children to share, so that only one AudioContext gets used
-    // (The browser/OS limits the number of these)
-    this.synth = new Synth();
-
-    // Prebind custom methods
-    this.toggleDrawer = this.toggleDrawer.bind(this);
-    this.drawerMenuItemTouched = this.drawerMenuItemTouched.bind(this);
-    this.snackbarRequestClose = this.snackbarRequestClose.bind(this);
-  }
-  getChildContext() {
+  getChildContext = () => {
     return {
       snackbar: this.displaySnackbar.bind(this),
       appbar: this.updateAppBar.bind(this),
       synth: this.synth,
     };
   }
-  componentDidMount() {
+
+  componentDidMount = () => {
     // Register the serviceworker
     var snackbar = this.displaySnackbar.bind(this);
     if ('serviceWorker' in navigator) {
@@ -105,15 +97,18 @@ class Application extends React.Component {
       });
     }
   }
-  toggleDrawer() {
+
+  toggleDrawer = () => {
     console.log("Toggling drawerOpen");
     this.state.drawerOpen = !this.state.drawerOpen;
     this.setState(this.state);
   }
-  leftNavChange(e, key, payload) {
+
+  leftNavChange = (e, key, payload) => {
     console.log("Change", e, key, payload);
   }
-  drawerMenuItemTouched(e) {
+
+  drawerMenuItemTouched = (e) => {
     // Lookup the route from our menu config object based on the menu item text
     // (I can't seem to find any better way to do this with the MenuItem component,
     // at least without building my own MenuItem wrapper class)
@@ -122,26 +117,30 @@ class Application extends React.Component {
     this.setState({drawerOpen: false}); // Close the menu
     this.context.router.push(route); // Go to the route
   }
-  snackbarRequestClose() {
+
+  snackbarRequestClose = () => {
     this.setState({snackbarOpen: false});
   }
-  displaySnackbar(message, duration) {
+
+  displaySnackbar = (message, duration) => {
     this.setState({
       snackbarOpen: true,
       snackbarMessage: message,
       snackbarAutoHideDuration: (typeof duration !== "undefined") ? duration : 1000
     });
   }
+
   /**
    * Used in child contexts to update the app bar
    */
-  updateAppBar(title, leftElement, rightElement) {
+  updateAppBar = (title, leftElement, rightElement) => {
     this.setState({
       appBarTitle: title,
       appBarLeftElement: leftElement,
       appBarRightElement: rightElement,
     });
   }
+
   render() {
     return (
       <MuiThemeProvider muiTheme={muiTheme}>
