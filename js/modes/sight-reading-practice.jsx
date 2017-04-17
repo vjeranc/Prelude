@@ -22,9 +22,9 @@ const baseKeys = ['c', 'd', 'e', 'f', 'g', 'a', 'b'];
 const upOctave = Teoria.interval('P8');
 const clefOptions = {
   treble: {
-    octaves: ['3', '4', '5', '6'],
-    minNote: 'C3',
-    maxNote: 'E6',
+    octaves: ['4', '5'],
+    minNote: 'A3',
+    maxNote: 'C6',
   },
   bass: {
     octaves: ['2', '3'],
