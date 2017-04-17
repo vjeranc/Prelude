@@ -3,8 +3,8 @@ import {
   CardText,
   CardTitle,
 } from 'material-ui';
-import Card from './common/card';
-import TipCard from './common/tip-card';
+import Card from './common/Card';
+import TipCard from './common/TipCard';
 
 /**
  * Component providing the main/home screen

@@ -8,8 +8,8 @@ import {
 } from 'material-ui';
 
 import Card from './card';
-import PrefsToggle from './prefs-toggle';
-import PrefsCheckbox from './prefs-checkbox';
+import PrefsToggle from './PrefsToggle';
+import PrefsCheckbox from './PrefsCheckbox';
 
 /**
  * Wrapper component for practice modes, containing general functionality for

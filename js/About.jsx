@@ -11,7 +11,7 @@ import CodeIcon from 'material-ui/svg-icons/action/code';
 import PersonIcon from 'material-ui/svg-icons/social/person';
 import OpenInNewIcon from 'material-ui/svg-icons/action/open-in-new';
 
-import Card from './common/card';
+import Card from './common/Card';
 
 /**
  * Component providing the About screen
