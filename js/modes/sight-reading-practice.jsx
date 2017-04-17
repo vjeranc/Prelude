@@ -1,4 +1,5 @@
 import React from 'react';
+import Vex from 'vexflow';
 import NoSleep from 'nosleep';
 import Teoria from 'teoria';
 import {
