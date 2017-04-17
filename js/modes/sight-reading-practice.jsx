@@ -22,9 +22,9 @@ const baseKeys = ['c', 'd', 'e', 'f', 'g', 'a', 'b'];
 const upOctave = Teoria.interval('P8');
 const clefOptions = {
   treble: {
-    octaves: ['4', '5'],
-    minNote: 'A3',
-    maxNote: 'C6',
+    octaves: ['3', '4', '5', '6'],
+    minNote: 'C3',
+    maxNote: 'E6',
   },
   bass: {
     octaves: ['2', '3'],
@@ -80,13 +80,6 @@ export default class SightReadingPractice extends React.Component {
     // Dirty way of storing on-screen keyboard keys down
     // this.keysDown = new Set();
     this.state.keysDown = new Set();
-
-    // Prebind custom methods
-    this.newQuestion = this.newQuestion.bind(this);
-    this.handleGuess = this.handleGuess.bind(this);
-    this.componentWillUnmount = this.componentWillUnmount.bind(this);
-    this.componentDidMount = this.componentDidMount.bind(this);
-    this.onMidiAccessGranted = this.onMidiAccessGranted.bind(this);
   }
 
   // Pick random element from an array; TODO: Move this into a utility module
@@ -98,12 +91,12 @@ export default class SightReadingPractice extends React.Component {
    * We need to disable nosleep on unmount in case the user leaves the practice session by some other means than by
    * using the back button in the AppBar (e.g. by using their browser navigation)
    */
-  componentWillUnmount() {
+  componentWillUnmount = () => {
     console.log('No longer preventing device from sleep.');
     this.nosleep.disable();
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
     // Prevent device from going to sleep
     if (this.props.prefs.preventSleep) {
       console.log('Preventing device from sleep.');
@@ -112,7 +105,7 @@ export default class SightReadingPractice extends React.Component {
 
     // Initialize Web MIDI
     if (navigator.requestMIDIAccess) {
-      navigator.requestMIDIAccess().then(this.onMidiAccessGranted.bind(this));
+      navigator.requestMIDIAccess().then(this.onMidiAccessGranted);
     } else {
       console.log('Web MIDI not supported in this browser. Try Chrome!');
     }
@@ -121,12 +114,12 @@ export default class SightReadingPractice extends React.Component {
   /**
    * Handler for after we've been granted the MIDI access we requested at launch
    */
-  onMidiAccessGranted(midi) {
+  onMidiAccessGranted = (midi) => {
     // Loop over all midi inputs
     const inputs = midi.inputs.values();
     let connected = false;
     for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
-      input.value.onmidimessage = this.onMidiMessage.bind(this);
+      input.value.onmidimessage = this.onMidiMessage;
       connected = true;
     }
 
@@ -136,17 +129,17 @@ export default class SightReadingPractice extends React.Component {
     }
 
     // Subscribe to port changes so we can handle new connections
-    midi.onstatechange = this.onMidiStateChange.bind(this);
+    midi.onstatechange = this.onMidiStateChange;
   }
 
   /**
    * Handler for new MIDI devices connected after launch
    */
-  onMidiStateChange(event) {
+  onMidiStateChange = (event) => {
     // We currently only care about inputs
     if (event.port.type == 'input') {
       if (event.port.connection == 'open') {
-        input.value.onmidimessage = this.onMidiMessage.bind(this);
+        input.value.onmidimessage = this.onMidiMessage;
         this.context.snackbar('MIDI device connected!');
       }
     }
@@ -155,7 +148,7 @@ export default class SightReadingPractice extends React.Component {
   /**
    * Handler for when a new MIDI message arrives from an input port
    */
-  onMidiMessage(message) {
+  onMidiMessage = (message) => {
     const type = message.data[0];
     const midiNote = message.data[1];
     const velocity = message.data[2];
@@ -187,7 +180,7 @@ export default class SightReadingPractice extends React.Component {
   /**
    * Randomly generate a new question and return a state object
    */
-  getRandomState() {
+  getRandomState = () => {
     const r = this.r;
 
     // Default setting for
@@ -325,7 +318,7 @@ export default class SightReadingPractice extends React.Component {
   /**
    * Generate a new question to ask and update state
    */
-  newQuestion() {
+  newQuestion = () => {
     const oldStateJson = JSON.stringify(this.state.keys);
     let newState;
     let newStateJson;
@@ -361,7 +354,7 @@ export default class SightReadingPractice extends React.Component {
    *
    * @param {Set} entries The names of the key(s) being guessed.
    */
-  handleGuess(entry) {
+  handleGuess = (entry) => {
     const keysDown = this.state.keysDown;
 
     // If there are multiple notes in this question, toggle this key in keysDown
@@ -430,7 +423,7 @@ export default class SightReadingPractice extends React.Component {
     // }
   }
 
-  correctGuess() {
+  correctGuess = () => {
     this.newQuestion();
     const snack = this.r([
       'Nice job!',
@@ -442,7 +435,7 @@ export default class SightReadingPractice extends React.Component {
     this.context.snackbar(snack, 1000);
   }
 
-  incorrectGuess() {
+  incorrectGuess = () => {
     const snack = this.r([
       'Nope :(',
       'Not quite...',
