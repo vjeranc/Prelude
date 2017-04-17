@@ -3,9 +3,9 @@ import { render } from 'react-dom';
 import { Router, Route, IndexRoute, hashHistory } from 'react-router';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 
-import Application from './application';
-import Home from './home';
-import About from './about';
+import Application from './Application';
+import Home from './Home';
+import About from './About';
 import SightReadingPracticeIntro from './modes/sight-reading-practice-intro';
 import PerfectPitchPracticeIntro from './modes/perfect-pitch-practice-intro';
 

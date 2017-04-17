@@ -8,7 +8,7 @@ import {
 } from 'material-ui';
 import PlayArrow from 'material-ui/svg-icons/av/play-arrow';
 
-import KeyboardButtons from '../keyboard-buttons';
+import KeyboardButtons from '../KeyboardButtons';
 import * as Midi from '../midi';
 
 /**

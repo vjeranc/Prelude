@@ -10,8 +10,8 @@ import {
 } from 'material-ui';
 import PD from 'probability-distributions';
 
-import SheetMusicView from '../sheet-music-view';
-import KeyboardButtons from '../keyboard-buttons';
+import SheetMusicView from '../SheetMusicView';
+import KeyboardButtons from '../KeyboardButtons';
 import * as Midi from '../midi';
 
 // Private constants
