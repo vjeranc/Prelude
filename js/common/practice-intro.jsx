@@ -2,9 +2,12 @@ import React from 'react';
 import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
 import NavigationBackIcon from 'material-ui/svg-icons/navigation/arrow-back';
-import List from 'material-ui/List/List';
-import Subheader from 'material-ui/Subheader';
-import Divider from 'material-ui/Divider';
+import {
+  Divider,
+  List,
+  Subheader,
+} from 'material-ui';
+
 import Card from './card.jsx';
 import PrefsToggle from './prefs-toggle.jsx';
 import PrefsCheckbox from './prefs-checkbox.jsx';

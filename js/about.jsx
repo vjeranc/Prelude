@@ -4,9 +4,9 @@ import {
   CardActions,
   CardHeader,
   CardMedia,
+  CardText,
   CardTitle,
   FlatButton,
-  CardText,
   List,
   ListItem,
 } from 'material-ui';
@@ -19,18 +19,12 @@ import Card from './common/card.jsx';
  * Component providing the About screen
  */
 class About extends React.Component {
-  constructor(props) {
-    super(props);
 
-    // Prebind custom methods
-    this.componentWillMount = this.componentWillMount.bind(this);
-  }
-
-  componentWillMount() {
+  componentWillMount = () => {
     this.context.appbar("About");
   }
 
-  clearSettings() {
+  clearSettings = () => {
     if (confirm("Clear all your custom settings and restore defaults?")) {
       localStorage.clear();
     }

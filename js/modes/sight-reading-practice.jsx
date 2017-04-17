@@ -1,14 +1,17 @@
 import React from 'react';
 import NoSleep from 'nosleep';
 import Teoria from 'teoria';
-import FlatButton from 'material-ui/FlatButton';
-import Card from 'material-ui/Card/Card';
-import CardTitle from 'material-ui/Card/CardTitle';
-import CardText from 'material-ui/Card/CardText';
+import {
+  Card,
+  CardText,
+  CardTitle,
+  FlatButton,
+} from 'material-ui';
+import PD from 'probability-distributions';
+
 import SheetMusicView from '../sheet-music-view.jsx';
 import KeyboardButtons from '../keyboard-buttons.jsx';
 import * as Midi from '../midi';
-import PD from 'probability-distributions';
 
 // Private constants
 const possibleClefs = ['treble', 'bass', 'alto'];

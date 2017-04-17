@@ -1,5 +1,5 @@
 import React from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
+import { RaisedButton } from 'material-ui';
 import { grey100, grey200, grey800, cyanA700, white } from 'material-ui/styles/colors';
 
 // Private constants

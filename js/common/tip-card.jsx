@@ -1,7 +1,9 @@
 import React from 'react';
-import Avatar from 'material-ui/Avatar';
-import CardHeader from 'material-ui/Card/CardHeader';
-import CardText from 'material-ui/Card/CardText';
+import {
+  Avatar,
+  CardHeader,
+  CardText,
+} from 'material-ui';
 import LightbulbIcon from 'material-ui/svg-icons/action/lightbulb-outline';
 import { white, yellow600 } from 'material-ui/styles/colors';
 import Card from './card.jsx';

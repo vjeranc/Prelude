@@ -3,14 +3,12 @@ import { Router, Route, Link } from 'react-router'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { cyan700, cyan900 } from 'material-ui/styles/colors';
-import AppBar from 'material-ui/AppBar';
-import Drawer from 'material-ui/Drawer';
-import MenuItem from 'material-ui/MenuItem';
-import Snackbar from 'material-ui/Snackbar';
+import { AppBar, Drawer, MenuItem, Snackbar } from 'material-ui';
 import HomeIcon from 'material-ui/svg-icons/action/home';
 import InfoIcon from 'material-ui/svg-icons/action/info';
 import MusicNoteIcon from 'material-ui/svg-icons/image/music-note';
 import HearingIcon from 'material-ui/svg-icons/av/hearing';
+
 import Synth from './synth.js';
 
 const muiTheme = getMuiTheme({
