@@ -8,7 +8,7 @@ import InfoIcon from 'material-ui/svg-icons/action/info';
 import MusicNoteIcon from 'material-ui/svg-icons/image/music-note';
 import HearingIcon from 'material-ui/svg-icons/av/hearing';
 
-import Synth from './synth.js';
+import Synth from './synth';
 
 const muiTheme = getMuiTheme({
   palette: {

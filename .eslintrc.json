@@ -11,6 +11,10 @@
     ],
     "globals": {
         "window": false,
-        "localStorage": false
+        "localStorage": false,
+        "__BUILD__": false,
+        "confirm": false,
+        "navigator": false,
+        "document": false
     }
 }

@@ -240,6 +240,7 @@ export default class SightReadingPractice extends React.Component {
 
     // Branch based on type (single, chord, cluster)
     const type = r(this.types);
+    let notes;
     switch (type) {
       case 'single':
         // Now we know a key signature; Do we want to just choose a key within it, or allow for accidentals?
@@ -259,7 +260,7 @@ export default class SightReadingPractice extends React.Component {
             }
           }
         }
-        var notes = [Teoria.note(key + accidental + octave)];
+        notes = [Teoria.note(key + accidental + octave)];
         break;
       case 'chords':
         // First pick a root Note from the chosen Scale...
@@ -268,7 +269,6 @@ export default class SightReadingPractice extends React.Component {
         const root = scaleNotes[scaleDegree];
 
         // If accidentals are enabled, choose a random chord quality
-        var notes;
         if (this.props.prefs.accidentals) {
           // Then pick a chord type...
           const chordType = r(possibleChordTypes);
@@ -277,7 +277,7 @@ export default class SightReadingPractice extends React.Component {
         } else {
           // Accidentals are disabled; Build a chord within the scale.
           notes = [root];
-          for (var i = 1; i < r([3, 4]); i++) {
+          for (let i = 1; i < r([3, 4]); i++) {
             const distance = i * 2;
             const degree = scaleDegree + distance;
             const note = scaleNotes[degree % 7];
@@ -297,7 +297,7 @@ export default class SightReadingPractice extends React.Component {
 
         // Invert the chord manually
         const inversion = r([0, 1, 2]);
-        for (var i = 0; i < inversion; i++) {
+        for (let i = 0; i < inversion; i++) {
           // If this note has room to shift up an octave, transpose it
           if (Teoria.interval(notes[0], maxNote).semitones() >= 12) {
             notes[0].transpose(upOctave);
