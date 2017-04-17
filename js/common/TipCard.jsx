@@ -5,7 +5,7 @@ import {
 } from 'material-ui';
 import LightbulbIcon from 'material-ui/svg-icons/action/lightbulb-outline';
 import { white, yellow600 } from 'material-ui/styles/colors';
-import Card from './card';
+import Card from './Card';
 
 /**
  * Special kind of Card for displaying tips on the home screen

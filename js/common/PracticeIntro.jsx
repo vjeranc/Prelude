@@ -7,7 +7,7 @@ import {
   Subheader,
 } from 'material-ui';
 
-import Card from './card';
+import Card from './Card';
 import PrefsToggle from './PrefsToggle';
 import PrefsCheckbox from './PrefsCheckbox';
 
