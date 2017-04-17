@@ -9,8 +9,8 @@ import {
 } from 'material-ui';
 import PD from 'probability-distributions';
 
-import SheetMusicView from '../sheet-music-view.jsx';
-import KeyboardButtons from '../keyboard-buttons.jsx';
+import SheetMusicView from '../sheet-music-view';
+import KeyboardButtons from '../keyboard-buttons';
 import * as Midi from '../midi';
 
 // Private constants
@@ -21,17 +21,17 @@ const scaleDegrees = [0, 1, 2, 3, 4, 5, 6];
 const baseKeys = ['c', 'd', 'e', 'f', 'g', 'a', 'b'];
 const upOctave = Teoria.interval('P8');
 const clefOptions = {
-  'treble': {
+  treble: {
     octaves: ['4', '5'],
     minNote: 'A3',
     maxNote: 'C6',
   },
-  'bass': {
+  bass: {
     octaves: ['2', '3'],
     minNote: 'C2',
     maxNote: 'E4',
   },
-  'alto': {
+  alto: {
     octaves: ['3', '4'],
     minNote: 'B2',
     maxNote: 'D5',
@@ -50,24 +50,24 @@ export default class SightReadingPractice extends React.Component {
     // Preload clefs
     this.clefs = [];
     possibleClefs.forEach((clef) => {
-      if (this.props.prefs["clefs." + clef] == true) {
+      if (this.props.prefs[`clefs.${clef}`] == true) {
         this.clefs.push(clef);
       }
     });
     if (this.clefs.length == 0) {
-      console.log("No clefs were selected; Defaulting to all clefs.");
+      console.log('No clefs were selected; Defaulting to all clefs.');
       this.clefs = possibleClefs;
     }
 
     // Prepare types
     this.types = [];
     possibleQuestionTypes.forEach((type) => {
-      if (this.props.prefs["types." + type] == true) {
+      if (this.props.prefs[`types.${type}`] == true) {
         this.types.push(type);
       }
     });
     if (this.types.length == 0) {
-      console.log("No types were selected; Defaulting to all types.");
+      console.log('No types were selected; Defaulting to all types.');
       this.types = possibleQuestionTypes;
     }
 
@@ -78,7 +78,7 @@ export default class SightReadingPractice extends React.Component {
     this.notesOn = {};
 
     // Dirty way of storing on-screen keyboard keys down
-    //this.keysDown = new Set();
+    // this.keysDown = new Set();
     this.state.keysDown = new Set();
 
     // Prebind custom methods
@@ -99,22 +99,22 @@ export default class SightReadingPractice extends React.Component {
    * using the back button in the AppBar (e.g. by using their browser navigation)
    */
   componentWillUnmount() {
-    console.log("No longer preventing device from sleep.");
+    console.log('No longer preventing device from sleep.');
     this.nosleep.disable();
   }
 
   componentDidMount() {
     // Prevent device from going to sleep
     if (this.props.prefs.preventSleep) {
-      console.log("Preventing device from sleep.");
+      console.log('Preventing device from sleep.');
       this.nosleep.enable();
     }
 
     // Initialize Web MIDI
     if (navigator.requestMIDIAccess) {
-        navigator.requestMIDIAccess().then(this.onMidiAccessGranted.bind(this));
+      navigator.requestMIDIAccess().then(this.onMidiAccessGranted.bind(this));
     } else {
-        console.log("Web MIDI not supported in this browser. Try Chrome!");
+      console.log('Web MIDI not supported in this browser. Try Chrome!');
     }
   }
 
@@ -123,16 +123,16 @@ export default class SightReadingPractice extends React.Component {
    */
   onMidiAccessGranted(midi) {
     // Loop over all midi inputs
-    var inputs = midi.inputs.values();
-    var connected = false;
-    for (var input = inputs.next(); input && !input.done; input = inputs.next()) {
+    const inputs = midi.inputs.values();
+    let connected = false;
+    for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
       input.value.onmidimessage = this.onMidiMessage.bind(this);
       connected = true;
     }
 
     // Tell the user if we found something
     if (connected) {
-      this.context.snackbar("Found a MIDI input device!", 4000);
+      this.context.snackbar('Found a MIDI input device!', 4000);
     }
 
     // Subscribe to port changes so we can handle new connections
@@ -144,10 +144,10 @@ export default class SightReadingPractice extends React.Component {
    */
   onMidiStateChange(event) {
     // We currently only care about inputs
-    if (event.port.type == "input") {
-      if (event.port.connection == "open") {
+    if (event.port.type == 'input') {
+      if (event.port.connection == 'open') {
         input.value.onmidimessage = this.onMidiMessage.bind(this);
-        this.context.snackbar("MIDI device connected!");
+        this.context.snackbar('MIDI device connected!');
       }
     }
   }
@@ -156,25 +156,25 @@ export default class SightReadingPractice extends React.Component {
    * Handler for when a new MIDI message arrives from an input port
    */
   onMidiMessage(message) {
-    var type     = message.data[0],
-        midiNote = message.data[1],
-        velocity = message.data[2];
+    const type = message.data[0];
+    const midiNote = message.data[1];
+    const velocity = message.data[2];
 
     if (type == Midi.Types.NoteOn) {
       // Update NotesOn
       this.notesOn[midiNote] = true;
 
-      let pressedNotes = new Set(Object.keys(this.notesOn).map(key => parseInt(key))); // Set of MIDI note numbers down
-      let correctNotes = this.state.keys.map(note => note.midi()); // Arr of correct MIDI note numbers
+      const pressedNotes = new Set(Object.keys(this.notesOn).map(key => parseInt(key))); // Set of MIDI note numbers down
+      const correctNotes = this.state.keys.map(note => note.midi()); // Arr of correct MIDI note numbers
 
       // If number of keys down matches number of notes on staff, evaluate answer
       if (pressedNotes.size === correctNotes.length) {
-        console.log("Keys down:", [...pressedNotes], "Correct notes:", correctNotes);
-        let diff = correctNotes.filter(note => !pressedNotes.has(note));
+        console.log('Keys down:', [...pressedNotes], 'Correct notes:', correctNotes);
+        const diff = correctNotes.filter(note => !pressedNotes.has(note));
         if (diff.length == 0) {
           this.correctGuess();
         } else if (correctNotes.length == 1 && ((correctNotes[0] - midiNote) % 12 == 0)) {
-          this.context.snackbar("Check your octave...");
+          this.context.snackbar('Check your octave...');
         } else {
           this.incorrectGuess();
         }
@@ -194,36 +194,38 @@ export default class SightReadingPractice extends React.Component {
     let flatKeyboardLabels = false;
 
     // Pick a clef
-    let clef = r(this.clefs);
+    const clef = r(this.clefs);
 
     // Pick a suitable octave for the clef
-    let octave = r(clefOptions[clef].octaves);
+    const octave = r(clefOptions[clef].octaves);
 
     // Based on the chosen clef, define a min/max allowable note
-    let minNote = Teoria.note(clefOptions[clef].minNote);
-    let maxNote = Teoria.note(clefOptions[clef].maxNote);
+    const minNote = Teoria.note(clefOptions[clef].minNote);
+    const maxNote = Teoria.note(clefOptions[clef].maxNote);
 
     // Pick a key signature
-    let keySignature, scaleType, tonic;
+    let keySignature;
+    let scaleType;
+    let tonic;
     if (this.props.prefs.randomizeKeySignature) {
       // Choose a number of sharps/flats, from 0 to 7, favoring lower amounts
-      var numAccidentals = Math.floor(PD.rbeta(1, 1, 3)[0] * 8);
-      var candidateSignatures = [];
-      var keySignatures = Object.keys(Vex.Flow.keySignature.keySpecs);
+      const numAccidentals = Math.floor(PD.rbeta(1, 1, 3)[0] * 8);
+      const candidateSignatures = [];
+      const keySignatures = Object.keys(Vex.Flow.keySignature.keySpecs);
       keySignatures.forEach((key) => {
-        if (Vex.Flow.keySignature.keySpecs[key]['num'] == numAccidentals) {
+        if (Vex.Flow.keySignature.keySpecs[key].num == numAccidentals) {
           candidateSignatures.push(key);
         }
       });
       keySignature = r(candidateSignatures);
-      if (Vex.Flow.keySignature.keySpecs[keySignature].acc == "b") {
+      if (Vex.Flow.keySignature.keySpecs[keySignature].acc == 'b') {
         flatKeyboardLabels = true;
       }
 
       // Pick a Scale for use with Teoria
-      if (keySignature[keySignature.length-1] == 'm') {
+      if (keySignature[keySignature.length - 1] == 'm') {
         // Strip the trailing 'm' for minor key signatures
-        tonic = Teoria.note(keySignature.substr(0, keySignature.length-1));
+        tonic = Teoria.note(keySignature.substr(0, keySignature.length - 1));
         scaleType = 'minor';
       } else {
         tonic = Teoria.note(keySignature);
@@ -234,25 +236,24 @@ export default class SightReadingPractice extends React.Component {
       tonic = Teoria.note('C');
       scaleType = 'major';
     }
-    let scale = Teoria.scale(tonic, scaleType);
+    const scale = Teoria.scale(tonic, scaleType);
 
     // Branch based on type (single, chord, cluster)
-    let type = r(this.types);
+    const type = r(this.types);
     switch (type) {
       case 'single':
         // Now we know a key signature; Do we want to just choose a key within it, or allow for accidentals?
-        let key = r(baseKeys);
-        let accidental = "";
+        const key = r(baseKeys);
+        let accidental = '';
         if (this.props.prefs.accidentals) {
           // TODO: Make this logic less naive
-          var useAccidental = r([null, 'sharp', 'flat']);
+          const useAccidental = r([null, 'sharp', 'flat']);
           if (useAccidental) {
             // Only add a sharp to a key that can receive it
             if (useAccidental == 'sharp' && ['c', 'd', 'f', 'g', 'a'].includes(key)) {
               accidental = '#';
               flatKeyboardLabels = false;
-            }
-            else if (useAccidental == 'flat' && ['d', 'e', 'g', 'a', 'b'].includes(key)) {
+            } else if (useAccidental == 'flat' && ['d', 'e', 'g', 'a', 'b'].includes(key)) {
               accidental = 'b';
               flatKeyboardLabels = true;
             }
@@ -262,24 +263,24 @@ export default class SightReadingPractice extends React.Component {
         break;
       case 'chords':
         // First pick a root Note from the chosen Scale...
-        let scaleNotes = scale.notes();
-        let scaleDegree = r(scaleDegrees);
-        let root = scaleNotes[scaleDegree];
+        const scaleNotes = scale.notes();
+        const scaleDegree = r(scaleDegrees);
+        const root = scaleNotes[scaleDegree];
 
         // If accidentals are enabled, choose a random chord quality
         var notes;
         if (this.props.prefs.accidentals) {
           // Then pick a chord type...
-          let chordType = r(possibleChordTypes);
-          let chord = Teoria.chord(root, chordType);
+          const chordType = r(possibleChordTypes);
+          const chord = Teoria.chord(root, chordType);
           notes = chord.notes();
         } else {
           // Accidentals are disabled; Build a chord within the scale.
           notes = [root];
-          for (var i=1; i<r([3,4]); i++) {
-            var distance = i * 2;
-            var degree = scaleDegree + distance;
-            var note = scaleNotes[degree % 7];
+          for (var i = 1; i < r([3, 4]); i++) {
+            const distance = i * 2;
+            const degree = scaleDegree + distance;
+            const note = scaleNotes[degree % 7];
             if (degree >= 7) {
               note.transpose(upOctave);
             }
@@ -295,8 +296,8 @@ export default class SightReadingPractice extends React.Component {
         }
 
         // Invert the chord manually
-        let inversion = r([0, 1, 2]);
-        for (var i=0; i<inversion; i++) {
+        const inversion = r([0, 1, 2]);
+        for (var i = 0; i < inversion; i++) {
           // If this note has room to shift up an octave, transpose it
           if (Teoria.interval(notes[0], maxNote).semitones() >= 12) {
             notes[0].transpose(upOctave);
@@ -310,14 +311,14 @@ export default class SightReadingPractice extends React.Component {
         // TODO
         break;
       default:
-        console.error("Invalid question type selected:", type);
+        console.error('Invalid question type selected:', type);
     }
 
     return {
-      clef: clef,
-      keySignature: keySignature,
+      clef,
+      keySignature,
       keys: notes,
-      flatKeyboardLabels: flatKeyboardLabels,
+      flatKeyboardLabels,
     };
   }
 
@@ -325,9 +326,9 @@ export default class SightReadingPractice extends React.Component {
    * Generate a new question to ask and update state
    */
   newQuestion() {
-    let oldStateJson = JSON.stringify(this.state.keys);
-    let newState = undefined;
-    let newStateJson = undefined;
+    const oldStateJson = JSON.stringify(this.state.keys);
+    let newState;
+    let newStateJson;
     let tries = 0;
 
     // Keep generating new questions until we come up with one that's actually new
@@ -339,7 +340,7 @@ export default class SightReadingPractice extends React.Component {
       tries++;
 
       if (tries > 25) {
-        console.log("Gave up trying to generate a different question!");
+        console.log('Gave up trying to generate a different question!');
         break;
       }
     } while (newStateJson == oldStateJson);
@@ -361,7 +362,7 @@ export default class SightReadingPractice extends React.Component {
    * @param {Set} entries The names of the key(s) being guessed.
    */
   handleGuess(entry) {
-    let keysDown = this.state.keysDown;
+    const keysDown = this.state.keysDown;
 
     // If there are multiple notes in this question, toggle this key in keysDown
     if (this.state.keys.length > 1) {
@@ -379,7 +380,7 @@ export default class SightReadingPractice extends React.Component {
     }
 
     // Save changed keysDown to state
-    this.setState({ keysDown: keysDown });
+    this.setState({ keysDown });
 
     // Convert
 
@@ -387,18 +388,18 @@ export default class SightReadingPractice extends React.Component {
     // TODO: Since the on-screen keyboard is only one octave, this logic will fail if we allow chords containing two of the same note
     if (keysDown.size === this.state.keys.length) {
       // Convert keysDown to Teoria notes
-      var notesDown = [];
-      keysDown.forEach(key => {
+      const notesDown = [];
+      keysDown.forEach((key) => {
         notesDown.push(Teoria.note(key));
       });
 
       // Loop over each note in the question, looking for a match in notesDown
-      var allMatched = true;
-      this.state.keys.forEach(note => {
+      let allMatched = true;
+      this.state.keys.forEach((note) => {
         // Check against all the notes that are down
-        var match = false;
-        notesDown.forEach(noteDown => {
-          let interval = Teoria.interval(note, noteDown);
+        let match = false;
+        notesDown.forEach((noteDown) => {
+          const interval = Teoria.interval(note, noteDown);
           if (interval.semitones() % 12 == 0) {
             match = true;
           }
@@ -431,34 +432,34 @@ export default class SightReadingPractice extends React.Component {
 
   correctGuess() {
     this.newQuestion();
-    var snack = this.r([
-      "Nice job!",
-      "Correct!",
+    const snack = this.r([
+      'Nice job!',
+      'Correct!',
       "That's right!",
-      "Very good!",
-      "Way to go!"
+      'Very good!',
+      'Way to go!',
     ]);
     this.context.snackbar(snack, 1000);
   }
 
   incorrectGuess() {
-    var snack = this.r([
-      "Nope :(",
-      "Not quite...",
-      "Keep trying!",
+    const snack = this.r([
+      'Nope :(',
+      'Not quite...',
+      'Keep trying!',
       "I don't think so...",
-      "Getting warmer..."
+      'Getting warmer...',
     ]);
     this.context.snackbar(snack, 1000);
 
     // Debug logging to troubleshoot occasional false judgments
-    console.log("Guess was deemed incorrect!");
-    console.log("State:", this.state);
+    console.log('Guess was deemed incorrect!');
+    console.log('State:', this.state);
   }
 
   render() {
     return (
-      <Card className="rx-sight-reading-practice" style={{maxWidth: "600px", margin: "0 auto"}}>
+      <Card className="rx-sight-reading-practice" style={{ maxWidth: '600px', margin: '0 auto' }}>
         <CardTitle title="What note is shown below?" />
         <CardText>
           <SheetMusicView
@@ -468,20 +469,20 @@ export default class SightReadingPractice extends React.Component {
           />
           <KeyboardButtons
             onEntry={this.handleGuess}
-            style={{margin: "10px auto"}}
-            showLabels={this.props.prefs["keyboardLabels"]}
+            style={{ margin: '10px auto' }}
+            showLabels={this.props.prefs.keyboardLabels}
             useFlats={this.state.flatKeyboardLabels}
-            enableSound={true}
+            enableSound
             keysDown={this.state.keysDown}
           />
           <FlatButton
             label="Skip"
             onTouchTap={this.newQuestion}
-            style={{display: "block", margin: "40px auto 20px"}}
+            style={{ display: 'block', margin: '40px auto 20px' }}
           />
         </CardText>
       </Card>
-    )
+    );
   }
 }
 SightReadingPractice.contextTypes = {
@@ -490,41 +491,41 @@ SightReadingPractice.contextTypes = {
 };
 SightReadingPractice.prefsDefinitions = [
   {
-    header: "Which clef(s) would you like to practice?",
+    header: 'Which clef(s) would you like to practice?',
     items: [
       {
-        type: "checkbox",
-        label: "Treble clef",
-        pref: "clefs.treble",
+        type: 'checkbox',
+        label: 'Treble clef',
+        pref: 'clefs.treble',
         default: true,
       },
       {
-        type: "checkbox",
-        label: "Alto clef",
-        pref: "clefs.alto",
+        type: 'checkbox',
+        label: 'Alto clef',
+        pref: 'clefs.alto',
         default: true,
       },
       {
-        type: "checkbox",
-        label: "Bass clef",
-        pref: "clefs.bass",
+        type: 'checkbox',
+        label: 'Bass clef',
+        pref: 'clefs.bass',
         default: true,
       },
-    ]
+    ],
   },
   {
-    header: "Which would you like to include?",
+    header: 'Which would you like to include?',
     items: [
       {
-        type: "checkbox",
-        label: "Single notes",
-        pref: "types.single",
+        type: 'checkbox',
+        label: 'Single notes',
+        pref: 'types.single',
         default: true,
       },
       {
-        type: "checkbox",
-        label: "Chords",
-        pref: "types.chords",
+        type: 'checkbox',
+        label: 'Chords',
+        pref: 'types.chords',
         default: false,
       },
       // {
@@ -533,35 +534,35 @@ SightReadingPractice.prefsDefinitions = [
       //   pref: "types.clusters",
       //   default: false,
       // },
-    ]
+    ],
   },
   {
-    header: "Other options",
+    header: 'Other options',
     items: [
       {
-        type: "toggle",
-        label: "Randomize key signature",
-        pref: "randomizeKeySignature",
+        type: 'toggle',
+        label: 'Randomize key signature',
+        pref: 'randomizeKeySignature',
         default: false,
       },
       {
-        type: "toggle",
-        label: "Include accidentals",
-        pref: "accidentals",
+        type: 'toggle',
+        label: 'Include accidentals',
+        pref: 'accidentals',
         default: true,
       },
       {
-        type: "toggle",
-        label: "Show keyboard labels",
-        pref: "keyboardLabels",
+        type: 'toggle',
+        label: 'Show keyboard labels',
+        pref: 'keyboardLabels',
         default: true,
       },
       {
-        type: "toggle",
-        label: "Prevent screen from dimming",
-        pref: "preventSleep",
+        type: 'toggle',
+        label: 'Prevent screen from dimming',
+        pref: 'preventSleep',
         default: true,
       },
-    ]
+    ],
   },
 ];

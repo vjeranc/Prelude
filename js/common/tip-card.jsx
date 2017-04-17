@@ -2,11 +2,10 @@ import React from 'react';
 import {
   Avatar,
   CardHeader,
-  CardText,
 } from 'material-ui';
 import LightbulbIcon from 'material-ui/svg-icons/action/lightbulb-outline';
 import { white, yellow600 } from 'material-ui/styles/colors';
-import Card from './card.jsx';
+import Card from './card';
 
 /**
  * Special kind of Card for displaying tips on the home screen
@@ -22,6 +21,6 @@ export default class extends React.Component {
         />
         {this.props.children}
       </Card>
-    )
+    );
   }
 }

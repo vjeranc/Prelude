@@ -1,12 +1,10 @@
 import React from 'react';
-import { Router, Route, IndexRoute, Link } from 'react-router';
-import { 
-  CardHeader,
+import {
   CardText,
   CardTitle,
 } from 'material-ui';
-import Card from './common/card.jsx';
-import TipCard from './common/tip-card.jsx';
+import Card from './common/card';
+import TipCard from './common/tip-card';
 
 /**
  * Component providing the main/home screen
@@ -14,12 +12,12 @@ import TipCard from './common/tip-card.jsx';
 class Home extends React.Component {
 
   componentWillMount = () => {
-    this.context.appbar("Prelude");
+    this.context.appbar('Prelude');
   }
   render() {
     // Logic behind display of Add To Home Screen cards
     let addToHomeCard = null;
-    let { query } = this.props.location;
+    const { query } = this.props.location;
     if (window.navigator.standalone !== undefined) {
       // Assume Safari for iOS
       if (window.navigator.standalone === false) {
@@ -39,7 +37,7 @@ class Home extends React.Component {
       }
     } else {
       // Assume Chrome for Android
-      if (query.homescreen == "1") {
+      if (query.homescreen == '1') {
         addToHomeCard = (
           <Card>
             <CardText>Thanks for adding Prelude to your home screen!</CardText>
@@ -59,7 +57,7 @@ class Home extends React.Component {
     return (
       <div>
         <Card>
-          <CardTitle title="Welcome!" subtitle="Use the menu to the upper-left to get started."/>
+          <CardTitle title="Welcome!" subtitle="Use the menu to the upper-left to get started." />
         </Card>
         <TipCard title="Connect a MIDI device">
           <CardText>
@@ -68,7 +66,7 @@ class Home extends React.Component {
         </TipCard>
         { addToHomeCard }
       </div>
-    )
+    );
   }
 }
 Home.contextTypes = {

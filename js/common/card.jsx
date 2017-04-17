@@ -6,9 +6,9 @@ import { Card } from 'material-ui';
  */
 export default class extends React.Component {
   render() {
-    //var { children, ...other } = this.props;
+    // var { children, ...other } = this.props;
     return (
-      <Card style={{maxWidth: "600px", margin: "0 auto 10px"}} {...this.props} />
-    )
+      <Card style={{ maxWidth: '600px', margin: '0 auto 10px' }} {...this.props} />
+    );
   }
 }

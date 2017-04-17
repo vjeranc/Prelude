@@ -8,7 +8,7 @@ import {
 } from 'material-ui';
 import PlayArrow from 'material-ui/svg-icons/av/play-arrow';
 
-import KeyboardButtons from '../keyboard-buttons.jsx';
+import KeyboardButtons from '../keyboard-buttons';
 import * as Midi from '../midi';
 
 /**
@@ -37,9 +37,9 @@ export default class PerfectPitchPractice extends React.Component {
   componentDidMount() {
     // Initialize Web MIDI
     if (navigator.requestMIDIAccess) {
-        navigator.requestMIDIAccess().then(this.onMidiAccessGranted.bind(this));
+      navigator.requestMIDIAccess().then(this.onMidiAccessGranted.bind(this));
     } else {
-        console.note("Web MIDI not supported in this browser. Try Chrome!");
+      console.note('Web MIDI not supported in this browser. Try Chrome!');
     }
   }
 
@@ -48,16 +48,16 @@ export default class PerfectPitchPractice extends React.Component {
    */
   onMidiAccessGranted(midi) {
     // Loop over all midi inputs
-    var inputs = midi.inputs.values();
-    var connected = false;
-    for (var input = inputs.next(); input && !input.done; input = inputs.next()) {
+    const inputs = midi.inputs.values();
+    let connected = false;
+    for (let input = inputs.next(); input && !input.done; input = inputs.next()) {
       input.value.onmidimessage = this.onMidiMessage.bind(this);
       connected = true;
     }
 
     // Tell the user if we found something
     if (connected) {
-      this.context.snackbar("Found a MIDI input device!", 4000);
+      this.context.snackbar('Found a MIDI input device!', 4000);
     }
 
     // Subscribe to port changes so we can handle new connections
@@ -69,10 +69,10 @@ export default class PerfectPitchPractice extends React.Component {
    */
   onMidiStateChange(event) {
     // We currently only care about inputs
-    if (event.port.type == "input") {
-      if (event.port.connection == "open") {
+    if (event.port.type == 'input') {
+      if (event.port.connection == 'open') {
         input.value.onmidimessage = this.onMidiMessage.bind(this);
-        this.context.snackbar("MIDI device connected!");
+        this.context.snackbar('MIDI device connected!');
       }
     }
   }
@@ -81,16 +81,16 @@ export default class PerfectPitchPractice extends React.Component {
    * Handler for when a new MIDI message arrives from an input port
    */
   onMidiMessage(message) {
-    var type     = message.data[0],
-        note     = message.data[1],
-        velocity = message.data[2];
+    let type = message.data[0],
+      note = message.data[1],
+      velocity = message.data[2];
 
     // 144 means Note On
     if (type == Midi.Types.NoteOn) {
       // Handle MIDI guess
-      var keys = ['c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#', 'a', 'a#', 'b'];
-      var key = keys[note % 12];
-      var octave = Math.floor(note/12) - 1;
+      const keys = ['c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#', 'a', 'a#', 'b'];
+      const key = keys[note % 12];
+      const octave = Math.floor(note / 12) - 1;
       if (this.state.key.key == key) {
         this.correctGuess();
       } else {
@@ -103,14 +103,14 @@ export default class PerfectPitchPractice extends React.Component {
    * Randomly generate a new question and return a state object
    */
   getRandomState() {
-    var r = this.r;
+    const r = this.r;
 
     // Now we know a key signature; Do we want to just choose a key within it, or allow for accidentals?
-    var baseKeys = ['c', 'd', 'e', 'f', 'g', 'a', 'b'];
-    var key = r(baseKeys);
-    var modifier = null;
+    const baseKeys = ['c', 'd', 'e', 'f', 'g', 'a', 'b'];
+    let key = r(baseKeys);
+    const modifier = null;
     if (this.props.prefs.accidentals) {
-      var useAccidental = r([true, false]);
+      const useAccidental = r([true, false]);
       if (useAccidental) {
         // Only add a sharp to a key that can receive it
         if (['c', 'd', 'f', 'g', 'a'].includes(key)) {
@@ -121,7 +121,7 @@ export default class PerfectPitchPractice extends React.Component {
     }
 
     return {
-      key: {key:key, modifier:modifier}
+      key: { key, modifier },
     };
   }
 
@@ -129,8 +129,8 @@ export default class PerfectPitchPractice extends React.Component {
    * Generate a new question to ask and update state
    */
   newQuestion() {
-    let oldStateJson = JSON.stringify(this.state.key);
-    let newState = undefined;
+    const oldStateJson = JSON.stringify(this.state.key);
+    let newState;
 
     // Keep generating new questions until we come up with one that's actually new
     // (We don't want duplicate consecutive questions)
@@ -169,12 +169,12 @@ export default class PerfectPitchPractice extends React.Component {
   }
 
   correctGuess() {
-    var snack = this.r([
-      "Nice job!",
-      "Correct!",
+    const snack = this.r([
+      'Nice job!',
+      'Correct!',
       "That's right!",
-      "Very good!",
-      "Way to go!"
+      'Very good!',
+      'Way to go!',
     ]);
     this.context.snackbar(snack, 1000);
 
@@ -188,31 +188,31 @@ export default class PerfectPitchPractice extends React.Component {
   }
 
   incorrectGuess() {
-    var snack = this.r([
-      "Nope :(",
-      "Not quite...",
-      "Keep trying!",
+    const snack = this.r([
+      'Nope :(',
+      'Not quite...',
+      'Keep trying!',
       "I don't think so...",
-      "Getting warmer..."
+      'Getting warmer...',
     ]);
     this.context.snackbar(snack, 1000);
   }
 
   render() {
     return (
-      <Card className="rx-perfect-pitch-practice" style={{maxWidth: "600px", margin: "0 auto"}}>
+      <Card className="rx-perfect-pitch-practice" style={{ maxWidth: '600px', margin: '0 auto' }}>
         <CardTitle title="What note is being played?" />
         <CardText>
-          <div style={{textAlign: "center"}}>
-            <FloatingActionButton onTouchTap={this.playSound} style={{textAlign: "center", margin: "20px auto 40px"}}>
+          <div style={{ textAlign: 'center' }}>
+            <FloatingActionButton onTouchTap={this.playSound} style={{ textAlign: 'center', margin: '20px auto 40px' }}>
               <PlayArrow />
             </FloatingActionButton>
           </div>
-          <KeyboardButtons onEntry={this.handleGuess} style={{margin: "10px auto"}} showLabels={this.props.prefs["keyboardLabels"]} enableSound={false} />
-          <FlatButton label="Next" onTouchTap={this.newQuestion} style={{display: "block", margin: "40px auto 20px"}} />
+          <KeyboardButtons onEntry={this.handleGuess} style={{ margin: '10px auto' }} showLabels={this.props.prefs.keyboardLabels} enableSound={false} />
+          <FlatButton label="Next" onTouchTap={this.newQuestion} style={{ display: 'block', margin: '40px auto 20px' }} />
         </CardText>
       </Card>
-    )
+    );
   }
 }
 PerfectPitchPractice.contextTypes = {
@@ -222,26 +222,26 @@ PerfectPitchPractice.contextTypes = {
 };
 PerfectPitchPractice.prefsDefinitions = [
   {
-    header: "Options",
+    header: 'Options',
     items: [
       {
-        type: "toggle",
-        label: "Include accidentals",
-        pref: "accidentals",
+        type: 'toggle',
+        label: 'Include accidentals',
+        pref: 'accidentals',
         default: true,
       },
       {
-        type: "toggle",
-        label: "Show keyboard labels",
-        pref: "keyboardLabels",
+        type: 'toggle',
+        label: 'Show keyboard labels',
+        pref: 'keyboardLabels',
         default: true,
       },
       {
-        type: "toggle",
-        label: "Auto-advance after correct guess",
-        pref: "autoAdvance",
+        type: 'toggle',
+        label: 'Auto-advance after correct guess',
+        pref: 'autoAdvance',
         default: true,
       },
-    ]
+    ],
   },
 ];

@@ -1,5 +1,4 @@
 import React from 'react';
-import { RaisedButton } from 'material-ui';
 import { grey100, grey200, grey800, cyanA700, white } from 'material-ui/styles/colors';
 
 // Private constants
@@ -11,21 +10,21 @@ const lowerRow = ['c', 'd', 'e', 'f', 'g', 'a', 'b'];
 // Component representing a single key
 class Key extends React.Component {
   render() {
-    var key = this.props.note;
-    //var showLabel = this.props.showLabel;
-    //var text = showLabel ? key : '';
-    var accidental = (key.length > 1);
-    var buttonWidth = "40px";
-    var style = {
+    const key = this.props.note;
+    // var showLabel = this.props.showLabel;
+    // var text = showLabel ? key : '';
+    const accidental = (key.length > 1);
+    const buttonWidth = '40px';
+    const style = {
       width: buttonWidth,
-      textTransform: "uppercase",
-      height: accidental ? "70px" : "140px",
+      textTransform: 'uppercase',
+      height: accidental ? '70px' : '140px',
       background: accidental ? grey800 : grey200,
       color: accidental ? grey100 : grey800,
-      border: "2px solid white",// + (accidental ? "#555" : "#CCC"),
-      marginRight: "-2px",
-      paddingTop: accidental ? "0" : "70px",
-      zIndex: accidental ? "1" : "0"
+      border: '2px solid white', // + (accidental ? "#555" : "#CCC"),
+      marginRight: '-2px',
+      paddingTop: accidental ? '0' : '70px',
+      zIndex: accidental ? '1' : '0',
     };
     if (this.props.held) {
       style.background = cyanA700;
@@ -34,7 +33,7 @@ class Key extends React.Component {
     if (key == 'd#') {
       style.marginRight = buttonWidth;
     }
-    return <button onClick={this.props.onClick} style={style} key={key} data-key={key}>{this.props.label}</button>
+    return <button onClick={this.props.onClick} style={style} key={key} data-key={key}>{this.props.label}</button>;
   }
 }
 
@@ -43,7 +42,7 @@ class KeyboardButtons extends React.Component {
 
   // Click handler for keys
   onButtonPress = (event) => {
-    let key = event.target.getAttribute('data-key');
+    const key = event.target.getAttribute('data-key');
 
     // Report all currently-down key(s) to parent's callback
     this.props.onEntry(key);
@@ -55,38 +54,36 @@ class KeyboardButtons extends React.Component {
   }
 
   render() {
-    let rootStyle = Object.assign({
-      position: "relative",
-      width: "266px",
-      height: "140px"
+    const rootStyle = Object.assign({
+      position: 'relative',
+      width: '266px',
+      height: '140px',
     }, this.props.style);
-    let rows = [
+    const rows = [
       {
         notes: upperRow,
         labels: this.props.useFlats ? upperRowFlats : upperRowSharps,
-        className: "rx-keyboard-buttons--accidentals",
-        style: {position: "absolute", top: 0, left: "18px", zIndex: 1},
+        className: 'rx-keyboard-buttons--accidentals',
+        style: { position: 'absolute', top: 0, left: '18px', zIndex: 1 },
       },
       {
         notes: lowerRow,
         labels: lowerRow,
-        className: "",
-        style: {position: "absolute", top: 0},
-      }
+        className: '',
+        style: { position: 'absolute', top: 0 },
+      },
     ];
     return (
       <div className="rx-keyboard-buttons" style={rootStyle}>
-        {rows.map(row => {
-          return <div className={row.className} style={row.style}>
-            {row.notes.map((note, i) => {
-              let held = this.props.keysDown ? this.props.keysDown.has(note) : false;
-              let label = this.props.showLabels ? row.labels[i] : '';
-              return <Key note={note} onClick={this.onButtonPress} label={label} held={held} key={note} />;
-            })}
-          </div>;
-        })}
+        {rows.map(row => <div className={row.className} style={row.style}>
+          {row.notes.map((note, i) => {
+            const held = this.props.keysDown ? this.props.keysDown.has(note) : false;
+            const label = this.props.showLabels ? row.labels[i] : '';
+            return <Key note={note} onClick={this.onButtonPress} label={label} held={held} key={note} />;
+          })}
+        </div>)}
       </div>
-    )
+    );
   }
 }
 KeyboardButtons.contextTypes = {
