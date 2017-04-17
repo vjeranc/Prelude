@@ -1,6 +1,6 @@
 import React from 'react';
 import PracticeIntro from '../common/practice-intro';
-import PerfectPitchPractice from './perfect-pitch-practice';
+import PerfectPitchPractice from './PerfectPitchPractice';
 
 /**
  * Intro screen for the Perfect Pitch practice mode

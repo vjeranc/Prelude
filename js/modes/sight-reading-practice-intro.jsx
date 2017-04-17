@@ -1,7 +1,7 @@
 import React from 'react';
 
-import PracticeIntro from '../common/practice-intro';
-import SightReadingPractice from './sight-reading-practice';
+import PracticeIntro from '../common/PracticeIntro';
+import SightReadingPractice from './SightReadingPractice';
 
 /**
  * Intro screen for the Sight Reading practice mode
