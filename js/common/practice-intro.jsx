@@ -53,14 +53,11 @@ class PracticeIntro extends React.Component {
     const name = e.target.name;
     const prefs = this.state.prefs;
     prefs[name] = enabled;
-    this.setState({ prefs });
+    this.setChanges({ prefs });
   }
 
-  /**
-   * Overridden setState which persists prefs changes to localStorage
-   */
-  setState = (changes) => {
-    super.setState(changes);
+  setChanges = (changes) => {
+    this.setState(changes);
     if ('prefs' in changes) {
       this.persistPrefs();
     }
@@ -79,7 +76,7 @@ class PracticeIntro extends React.Component {
    * TODO: If we use routing, maybe pass the options as query params in the URL (would allow deep-linking to specific modes)
    */
   start = () => {
-    this.setState({ started: true });
+    this.setChanges({ started: true });
     this.context.appbar(
       this.props.title,
       <IconButton onTouchTap={this.end}><NavigationBackIcon /></IconButton>,
@@ -90,7 +87,7 @@ class PracticeIntro extends React.Component {
    * End the practice session and return to the intro/prefs screen
    */
   end = () => {
-    this.setState({ started: false });
+    this.setChanges({ started: false });
     this.context.appbar(
       this.props.title,
       null,

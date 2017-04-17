@@ -27,5 +27,8 @@ module.exports = {
     new webpack.DefinePlugin({
       __BUILD__: JSON.stringify(childProcess.execSync('git rev-parse --short HEAD').toString().trim())
     })
-  ]
+  ],
+  resolve: {
+    extensions: ['', '.js', '.jsx'],
+  },
 };
